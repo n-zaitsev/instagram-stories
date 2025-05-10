@@ -11,8 +11,12 @@ import Kingfisher
 
 struct StoryView: View {
     let story: Story
-    @Environment(\.modelContext) private var modelContext
-    @Query private var states: [StoryState]
+    private let commandFactory: StoryCommandFactory
+
+    init(story: Story, commandFactory: StoryCommandFactory) {
+        self.story = story
+        self.commandFactory = commandFactory
+    }
 
     var body: some View {
             KFImage(story.imageURL)
@@ -27,52 +31,14 @@ struct StoryView: View {
                 .resizable()
                 .scaledToFit()
                 .edgesIgnoringSafeArea(.all)
-                .onAppear { markSeen() }
+                .onAppear { commandFactory.markAsSeen(id: story.id) }
 
         HStack {
             Spacer()
-            Button(action: { toggleLike() }) {
-                Image(systemName: isLiked() ? "heart.fill" : "heart")
+            Button(action: { commandFactory.markAsLiked(id: story.id, liked: !story.isLiked) }) {
+                Image(systemName: story.isLiked ? "heart.fill" : "heart")
                     .font(.largeTitle)
             }
         }
     }
-
-    private func stateEntity() -> StoryState {
-        if let existing = states.first(where: { $0.id == story.id }) {
-            return existing
-        }
-        let newState = StoryState(id: story.id)
-        modelContext.insert(newState)
-        return newState
-    }
-
-    private func markSeen() {
-        let entity = stateEntity()
-        entity.isSeen = true
-        saveContext()
-    }
-
-    private func toggleLike() {
-        let entity = stateEntity()
-        entity.isLiked.toggle()
-        saveContext()
-    }
-
-    private func isLiked() -> Bool {
-        stateEntity().isLiked
-    }
-
-    private func saveContext() {
-            do {
-                try modelContext.save()
-            } catch {
-                print("Failed to save context: \(error)")
-            }
-        }
-}
-
-#Preview {
-    StoryView(story: .init(id: 0, userName: "Name", imageURL: URL(string: "https://pixabay.com/photos/bird-eastern-towhee-towhee-nature-9551361/")!))
-        .modelContainer(for: StoryState.self, inMemory: true)
 }

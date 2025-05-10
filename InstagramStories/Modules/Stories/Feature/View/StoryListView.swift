@@ -15,17 +15,21 @@ private enum Constants {
 }
 
 struct StoryListView: View {
-    @StateObject private var viewModel = StoryViewModel(storiesService: StoriesServiceImp())
-    @Environment(\.modelContext) private var modelContext
-    @Query private var states: [StoryState]
+    @StateObject private var viewModel: StoryViewModel
+    private let commandFactory: StoryCommandFactory
+
+    init(dataManager: StoryDataManager, commandFactory: StoryCommandFactory) {
+        _viewModel = StateObject(wrappedValue: StoryViewModel(storiesService: StoriesServiceImp(dataManager: dataManager)))
+        self.commandFactory = commandFactory
+    }
 
     var body: some View {
         NavigationView {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: Constants.spacing) {
                     ForEach(viewModel.stories) { story in
-                        NavigationLink(destination: StoryView(story: story)) {
-                            StoryThumbnailView(story: story, isSeen: isSeen(story.id))
+                        NavigationLink(destination: StoryView(story: story, commandFactory: commandFactory)) {
+                            StoryThumbnailView(story: story, isSeen: story.isSeen)
                                 .onAppear {
                                     if story.id == viewModel.stories.last?.id {
                                         viewModel.loadNextPage()
@@ -40,12 +44,4 @@ struct StoryListView: View {
             .navigationTitle(Constants.navigationTitle)
         }
     }
-
-    private func isSeen(_ id: Int) -> Bool {
-        states.first(where: { $0.id == id })?.isSeen ?? false
-    }
-}
-
-#Preview() {
-    StoryListView()
 }

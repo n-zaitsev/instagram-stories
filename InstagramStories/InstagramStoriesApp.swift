@@ -25,8 +25,13 @@ struct InstagramStoriesApp: App {
 
     var body: some Scene {
         WindowGroup {
-            StoryListView()
-                .modelContainer(sharedModelContainer)
+            let dataManager = StoryDataManagerImp(modelContext: sharedModelContainer.mainContext)
+            StoryListView(
+                dataManager: dataManager,
+                commandFactory: StoryCommandFactoryImp(dataManager: dataManager)
+            )
+            .modelContainer(sharedModelContainer)
+                
         }
         
     }
