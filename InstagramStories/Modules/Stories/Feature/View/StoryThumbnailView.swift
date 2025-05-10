@@ -21,23 +21,27 @@ struct StoryThumbnailView: View {
 
     var body: some View {
         ZStack {
-            KFImage(story.imageURL)
-                .placeholder({
-                    Image(systemName: "photo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: Constants.imageSize, height: Constants.imageSize)
-                        .foregroundColor(.gray)
-                })
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: Constants.imageSize, height: Constants.imageSize)
-                .clipShape(Circle())
-
+            avatarImage
             storyRing
         }
     }
 
+    @ViewBuilder
+    private var avatarImage: some View {
+        KFImage(story.imageURL)
+            .placeholder({
+                Image(systemName: "photo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: Constants.imageSize, height: Constants.imageSize)
+                    .foregroundColor(.gray)
+            })
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: Constants.imageSize, height: Constants.imageSize)
+            .clipShape(Circle())
+    }
+    
     @ViewBuilder
     private var storyRing: some View {
         let gradient = isSeen ? AngularGradient(colors: [Color.gray], center: .center) : AngularGradient(gradient: Constants.gradient, center: .center)
