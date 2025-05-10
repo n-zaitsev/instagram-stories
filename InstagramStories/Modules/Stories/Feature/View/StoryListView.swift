@@ -15,7 +15,7 @@ private enum Constants {
 }
 
 struct StoryListView: View {
-    @StateObject private var viewModel = StoryViewModel()
+    @StateObject private var viewModel = StoryViewModel(storiesService: StoriesServiceImp())
     @Environment(\.modelContext) private var modelContext
     @Query private var states: [StoryState]
 
