@@ -28,4 +28,7 @@ A Swift/SwiftUI demo app showcasing an Instagram Stories–inspired experience, 
   - State persistence (seen/unseen, liked/unliked) powered by **SwiftData**  
 ---
 
-![Stories Demo](Assets/demo.gif)
+
+
+https://github.com/user-attachments/assets/c472f108-9866-47c4-91be-a465864db5c9
+
