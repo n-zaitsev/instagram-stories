@@ -13,8 +13,6 @@ struct StoryView: View {
     let story: Story
     @Environment(\.modelContext) private var modelContext
     @Query private var states: [StoryState]
-    @Environment(\.presentationMode) var mode
-    @GestureState private var dragOffset: CGSize = .zero
 
     var body: some View {
             KFImage(story.imageURL)
